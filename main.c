@@ -3,15 +3,34 @@
 #include "Node.h"
 #include "md5.h"
 
-#define SHA_DIGEST_LENGTH 32
-
 char *str2md5(const char*, int );
 
 int main(int argc, char **argv)
 {
-    char *output = str2md5("Hello World", strlen("Hello World"));
+    //prints the md5 hash of the string file
+    char file[64] = "Hello World\0";
+    char *output = str2md5(file, strlen(file));
     printf("%s\n", output);
     free(output);
+
+    //struct node* root = buildTree();
+
+    //the rest of the main proves that computing the top hash works
+    char file1[64] = "file contents\0";
+    char file2[64] = "different contents\0";
+
+    char *hash1 = str2md5(file1, strlen(file1));
+    char *hash2 = str2md5(file2, strlen(file2));
+
+    char *combined = strcat(hash1, hash2);
+
+    char *tophash = str2md5(combined, strlen(combined));
+
+    printf("Top Hash: %s\n", tophash);
+
+    //TODO: make a binary tree and compute top hash
+
+
     return 0;
 }
 

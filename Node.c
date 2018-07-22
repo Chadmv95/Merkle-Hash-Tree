@@ -1,13 +1,12 @@
 #include "Node.h"
+#include <string.h>
 
-struct node
+struct node* buildTree()
 {
-  int key_value;
-  struct node *left;
-  struct node *right;
-};
-
-struct node *root = 0;
+    struct node* root = NULL;
+    root = insert(0, root);
+    return(root);
+}
 
 void destroy_tree(struct node *leaf)
 {
@@ -17,6 +16,35 @@ void destroy_tree(struct node *leaf)
       destroy_tree(leaf->right);
       free( leaf );
   }
+}
+
+int size(struct node* node) {
+  if (node == NULL) {
+    return(0);
+  } else {
+    return(size(node->left) + 1 + size(node->right));
+  }
+}
+
+int maxDepth(struct node* node) {
+  if (node==NULL) {
+    return(0);
+  }
+  else {
+
+    int lDepth = maxDepth(node->left);
+    int rDepth = maxDepth(node->right);
+
+    if (lDepth > rDepth) return(lDepth+1);
+    else return(rDepth+1);
+  }
+}
+
+void printTree(struct node* node) {
+  if (node == NULL) return;
+  printTree(node->left);
+  printf("%d ", node->key_value);
+  printTree(node->right);
 }
 
 insert(int key, struct node **leaf)
