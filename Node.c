@@ -1,11 +1,26 @@
 #include "Node.h"
 #include <string.h>
 
+struct node* newNode(char *hash) {
+  struct node* node = malloc(sizeof(struct node));    // "new" is like "malloc"
+  node->key_value = 0;
+  node->hash_value = hash;
+  node->left = NULL;
+  node->right = NULL;
+
+  return(node);
+}
+
 struct node* buildTree()
 {
-    struct node* root = NULL;
-    root = insert(0, root);
-    return(root);
+  struct node* root = newNode("");
+  struct node* lChild = newNode("");
+  struct node* rChild = newNode("");
+
+  root->left = lChild;
+  root->right= rChild;
+
+  return(root);
 }
 
 void destroy_tree(struct node *leaf)

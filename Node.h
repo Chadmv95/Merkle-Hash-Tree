@@ -5,10 +5,12 @@
 struct node
 {
   int key_value;
-  char hash_value[HASH_LENGTH];
+  char *hash_value;
   struct node *left;
   struct node *right;
 };
+
+struct node* newNode( char *hash );
 
 struct node* buildTree();
 

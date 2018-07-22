@@ -29,6 +29,7 @@ int main(int argc, char **argv)
     printf("Top Hash: %s\n", tophash);
 
     //TODO: make a binary tree and compute top hash
+    struct node* root = buildTree();
 
 
     return 0;
