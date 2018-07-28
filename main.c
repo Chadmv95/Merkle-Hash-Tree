@@ -4,12 +4,14 @@
 #include "md5.h"
 #include <string.h>
 
+//function prototypes
 char* str2md5(const char*, int );
 char* readFile(char *filename);
 
 int main(int argc, char **argv)
 {
     //prints the md5 hash of the string file
+    //this is a proof of concept for the hashing
     char file[64] = "Hello World\0";
     char *output = str2md5(file, strlen(file));
     printf("%s\n", output);
@@ -19,12 +21,21 @@ int main(int argc, char **argv)
     char *file3 = readFile("test1.txt");
     char *file4 = readFile("test2.txt");
 
+    //builds the tree which is only 3 nodes
     struct node* root = buildTree();
+
+    //computes hash values for the base level based on the file contents
     root->left->hash_value = str2md5(file3, strlen(file3));
     root->right->hash_value = str2md5(file4, strlen(file4));
+    //free file variables, they are taking up memory and are not used anymore
+    free(file3);
+    free(file4);
+
+    //combines the hash strings and computes top hash
     char *combined1 = strcat(root->left->hash_value, root->right->hash_value);
     root->hash_value = str2md5(combined1, strlen(combined1));
 
+    //print top hash to console
     printf("Top Hash: %s\n", root->hash_value);
 
     return 0;
