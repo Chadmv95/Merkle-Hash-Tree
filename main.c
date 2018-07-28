@@ -15,33 +15,17 @@ int main(int argc, char **argv)
     printf("%s\n", output);
     free(output);
 
+    //read from files and get hash based on that
     char *file3 = readFile("test1.txt");
     char *file4 = readFile("test2.txt");
 
-    char *hash3 = str2md5(file3, strlen(file3));
-    char *hash4 = str2md5(file4, strlen(file4));
-    char *tophash1 = str2md5(strcat(hash3, hash4), strlen(strcat(hash3,hash4)));
-    printf("Top Hash: %s\n", tophash1);
-    printf("          1cd0b9f641ac298438582651bd56b22f\n");
-
-    //struct node* root = buildTree();
-
-    //the rest of the main proves that computing the top hash works
-    char file1[64] = "file contents\0";
-    char file2[64] = "different contents\0";
-
-    char *hash1 = str2md5(file1, strlen(file1));
-    char *hash2 = str2md5(file2, strlen(file2));
-
-    char *combined = strcat(hash1, hash2);
-
-    char *tophash = str2md5(combined, strlen(combined));
-
-    printf("Top Hash: %s\n", tophash);
-
-    //TODO: make a binary tree and compute top hash
     struct node* root = buildTree();
+    root->left->hash_value = str2md5(file3, strlen(file3));
+    root->right->hash_value = str2md5(file4, strlen(file4));
+    char *combined1 = strcat(root->left->hash_value, root->right->hash_value);
+    root->hash_value = str2md5(combined1, strlen(combined1));
 
+    printf("Top Hash: %s\n", root->hash_value);
 
     return 0;
 }
