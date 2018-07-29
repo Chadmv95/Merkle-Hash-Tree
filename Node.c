@@ -1,121 +1,80 @@
 #include "Node.h"
 #include <string.h>
 
-struct node* newNode(char *hash) {
-  struct node* node = malloc(sizeof(struct node));
-  node->key_value = 0;
+struct node *newNode(char *hash)
+{
+  struct node *node = malloc(sizeof(struct node));
   node->hash_value = hash;
-  node->left = NULL;
-  node->right = NULL;
+  node->next = NULL;
+  node->parent = NULL;
 
-  return(node);
+  return (node);
 }
 
-struct node* buildTree()
+// struct node* buildTree()
+// {
+//   struct node* root = newNode("");
+//   struct node* lChild = newNode("");
+//   struct node* rChild = newNode("");
+//   struct node* llc = newNode("");
+//   struct node* lrc = newNode("");
+//   struct node* rlc = newNode("");
+//   struct node* rrc = newNode("");
+
+//   lChild->left = llc;
+//   lChild->right = lrc;
+//   rChild->left = rlc;
+//   rChild->right = rrc;
+//   root->left = lChild;
+//   root->right = rChild;
+
+//   return(root);
+// }
+
+insert(char *hash, struct node *prevNode)
 {
-  struct node* root = newNode("");
-  struct node* lChild = newNode("");
-  struct node* rChild = newNode("");
-  struct node* llc = newNode("");
-  struct node* lrc = newNode("");
-  struct node* rlc = newNode("");
-  struct node* rrc = newNode("");
+  struct node *node = malloc(sizeof(struct node));
+  node->hash_value = hash;
+  prevNode->next = node;
+  node->prev = prevNode;
+  node->next = NULL;
+  node->parent = NULL;
 
-  lChild->left = llc;
-  lChild->right = lrc;
-  rChild->left = rlc;
-  rChild->right = rrc;
-  root->left = lChild;
-  root->right = rChild;
-
-  return(root);
+  return (node);
 }
 
-void destroy_tree(struct node *leaf)
+computeParentHash(struct node *n1, struct node *prevUncle)
 {
-  if( leaf != 0 )
+  struct node *n2; 
+  if (n1->next == NULL && n1->prev == NULL)
+    return n1->hash_value;
+
+
+  if (n1->next == NULL)
   {
-      destroy_tree(leaf->left);
-      destroy_tree(leaf->right);
-      free( leaf );
+    n2 = newNode('\0');
   }
-}
-
-int size(struct node* node) {
-  if (node == NULL) {
-    return(0);
-  } else {
-    return(size(node->left) + 1 + size(node->right));
-  }
-}
-
-int maxDepth(struct node* node) {
-  if (node==NULL) {
-    return(0);
-  }
-  else {
-
-    int lDepth = maxDepth(node->left);
-    int rDepth = maxDepth(node->right);
-
-    if (lDepth > rDepth) return(lDepth+1);
-    else return(rDepth+1);
-  }
-}
-
-void printTree(struct node* node) {
-  if (node == NULL) return;
-  printTree(node->left);
-  printf("%d ", node->key_value);
-  printTree(node->right);
-}
-
-unsigned int getLeafCount(struct node* node)
-{
-  if(node == NULL)
-    return 0;
-  if(node->left == NULL && node->right==NULL)
-    return 1;
   else
-    return getLeafCount(node->left) + getLeafCount(node->right);
-}
-
-insert(int key, struct node **leaf)
-{
-    if( *leaf == 0 )
-    {
-        *leaf = (struct node*) malloc( sizeof( struct node ) );
-        (*leaf)->key_value = key;
-        /* initialize the children to null */
-        (*leaf)->left = 0;
-        (*leaf)->right = 0;
-    }
-    else if(key < (*leaf)->key_value)
-    {
-        insert( key, &(*leaf)->left );
-    }
-    else if(key > (*leaf)->key_value)
-    {
-        insert( key, &(*leaf)->right );
-    }
-}
-
-struct node *search(int key, struct node *leaf)
-{
-  if( leaf != 0 )
   {
-      if(key==leaf->key_value)
-      {
-          return leaf;
-      }
-      else if(key<leaf->key_value)
-      {
-          return search(key, leaf->left);
-      }
-      else
-      {
-          return search(key, leaf->right);
-      }
+    n2 = n1->next;
   }
-  else return 0;
+
+  char *combinedHash = strcat(n1->hash_value, n2->hash_value);
+  char *newHash = string2md5(combinedHash, 32);
+  struct node *parent = malloc(sizeof(struct node));
+  parent->hash_value = newHash;
+  parent->prev = prevUncle;
+  prevUncle->next = parent;
+
+    if(prevUncle == NULL){
+    parent->fp = parent;
+    }
+    else {
+      parent->fp = prevUncle->fp;
+    }
+
+  if(n2->hash_value == '\0' || n2->next == NULL){
+    computeParentHash(n1->fp, NULL);
+  }
+  computeParentHash(n2->next, parent);
 }

@@ -4,10 +4,12 @@
 
 struct node
 {
-  int key_value;
   char *hash_value;
-  struct node *left;
-  struct node *right;
+  struct node *next;
+  struct node *prev;
+  struct node *parent;
+
+  struct node *fp;
 };
 
 struct node* newNode( char *hash );
