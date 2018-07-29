@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include "Node.h"
 #include "md5.h"
-#include <string.h>
 
 //function prototypes
 char* str2md5(const char*, int );
@@ -18,11 +17,37 @@ int main(int argc, char **argv)
     free(output);
 
     //read from files and get hash based on that
-    char *file3 = readFile("test1.txt");
-    char *file4 = readFile("test2.txt");
+    char *file1 = readFile("test1.txt");
+    char *file2 = readFile("test2.txt");
+    char *file3 = readFile("test3.txt");
+    char *file4 = readFile("test4.txt");
+    char *file5 = readFile("test5.txt");
+    char *file6 = readFile("test6.txt");
+    char *file7 = readFile("test7.txt");
+    char *file8 = readFile("test8.txt");
 
     //builds the tree which is only 3 nodes
     struct node* root = buildTree();
+    root->left->left->hash_value = str2md5(file1, strlen(file1));
+    root->left->right->hash_value = str2md5(file2, strlen(file2));
+    root->right->left->hash_value = str2md5(file3, strlen(file3));
+    root->right->right->hash_value = str2md5(file4, strlen(file4));
+
+    free(file1);
+    free(file2);
+    free(file3);
+    free(file4);
+
+    char *comb = strcat(root->left->left->hash_value, root->left->right->hash_value);
+    root->left->hash_value = str2md5(comb, strlen(comb));
+
+    comb = strcat(root->right->left->hash_value, root->right->right->hash_value);
+    root->right->hash_value = str2md5(comb, strlen(comb));
+
+    comb = strcat(root->left->hash_value, root->right->hash_value);
+    root->hash_value = str2md5(comb, strlen(comb));
+
+    printf("Top Hash: %s\n", root->hash_value);
 
     //computes hash values for the base level based on the file contents
     root->left->hash_value = str2md5(file3, strlen(file3));
@@ -74,7 +99,7 @@ char* readFile(char *filename)
            buffer = NULL;
        }
 
-       // Always remember to close the file.
+       //close the file.
        fclose(handler);
     }
 
@@ -105,7 +130,8 @@ char *str2md5(const char *str, int length) {
     MD5_Final(digest, &c);
 
     for (n = 0; n < 16; ++n) {
-        snprintf(&(out[n*2]), 16*2, "%02x", (unsigned int)digest[n]);
+        //changed 32 to 33 and segmentation faults stopped happening
+        snprintf(&(out[n*2]), 33, "%02x", (unsigned int)digest[n]);
     }
 
     return out;

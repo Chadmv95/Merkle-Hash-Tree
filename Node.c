@@ -2,7 +2,7 @@
 #include <string.h>
 
 struct node* newNode(char *hash) {
-  struct node* node = malloc(sizeof(struct node));    // "new" is like "malloc"
+  struct node* node = malloc(sizeof(struct node));
   node->key_value = 0;
   node->hash_value = hash;
   node->left = NULL;
@@ -16,9 +16,17 @@ struct node* buildTree()
   struct node* root = newNode("");
   struct node* lChild = newNode("");
   struct node* rChild = newNode("");
+  struct node* llc = newNode("");
+  struct node* lrc = newNode("");
+  struct node* rlc = newNode("");
+  struct node* rrc = newNode("");
 
+  lChild->left = llc;
+  lChild->right = lrc;
+  rChild->left = rlc;
+  rChild->right = rrc;
   root->left = lChild;
-  root->right= rChild;
+  root->right = rChild;
 
   return(root);
 }
