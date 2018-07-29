@@ -70,6 +70,16 @@ void printTree(struct node* node) {
   printTree(node->right);
 }
 
+unsigned int getLeafCount(struct node* node)
+{
+  if(node == NULL)
+    return 0;
+  if(node->left == NULL && node->right==NULL)
+    return 1;
+  else
+    return getLeafCount(node->left) + getLeafCount(node->right);
+}
+
 insert(int key, struct node **leaf)
 {
     if( *leaf == 0 )

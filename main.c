@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "Node.h"
 #include "md5.h"
+#include <dirent.h>
 
 //function prototypes
 char* str2md5(const char*, int );
@@ -9,6 +10,23 @@ char* readFile(char *filename);
 
 int main(int argc, char **argv)
 {
+    DIR *d;
+    struct dirent *dir;
+    char file_dir[16] = "./files/";
+    char *files;
+    char *file_hash;
+    d = opendir(file_dir);
+    if (d)
+    {
+        while ((dir = readdir(d)) != NULL)
+        {
+            if(strcmp(dir->d_name, ".") && strcmp(dir->d_name, "..")){
+                printf("%s\n", dir->d_name);
+            }
+        }
+        closedir(d);
+    }
+
     //prints the md5 hash of the string file
     //this is a proof of concept for the hashing
     char file[64] = "Hello World\0";
@@ -17,14 +35,14 @@ int main(int argc, char **argv)
     free(output);
 
     //read from files and get hash based on that
-    char *file1 = readFile("test1.txt");
-    char *file2 = readFile("test2.txt");
-    char *file3 = readFile("test3.txt");
-    char *file4 = readFile("test4.txt");
-    char *file5 = readFile("test5.txt");
-    char *file6 = readFile("test6.txt");
-    char *file7 = readFile("test7.txt");
-    char *file8 = readFile("test8.txt");
+    char *file1 = readFile("./files/test1.txt");
+    char *file2 = readFile("./files/test2.txt");
+    char *file3 = readFile("./files/test3.txt");
+    char *file4 = readFile("./files/test4.txt");
+    char *file5 = readFile("./files/test5.txt");
+    char *file6 = readFile("./files/test6.txt");
+    char *file7 = readFile("./files/test7.txt");
+    char *file8 = readFile("./files/test8.txt");
 
     //builds the tree which is only 3 nodes
     struct node* root = buildTree();
@@ -130,8 +148,8 @@ char *str2md5(const char *str, int length) {
     MD5_Final(digest, &c);
 
     for (n = 0; n < 16; ++n) {
-        //changed 32 to 33 and segmentation faults stopped happening
-        snprintf(&(out[n*2]), 33, "%02x", (unsigned int)digest[n]);
+        //changed 32 to 33 and something worked
+        snprintf(&(out[n*2]), 32*8+1, "%02x", (unsigned int)digest[n]);
     }
 
     return out;
