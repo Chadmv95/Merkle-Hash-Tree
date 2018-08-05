@@ -10,29 +10,35 @@ char* readFile(char *filename);
 
 int main(int argc, char **argv)
 {
-
+    //variable to count the number of files
     long unsigned int num_files = 0;
 
+    //variables for reading in the file contents
     DIR *d;
     struct dirent *dir;
     char file_dir[16] = "./files/";
 
+    //nodes in the tree need to be initialized here as null
     struct node* prev = NULL;
     struct node* fn = NULL;
 
+    //open the file using DIR
     d = opendir(file_dir);
     if (d)
     {
+        //continue opening and reading files until none are left
         while ((dir = readdir(d)) != NULL)
         {
+            //read the file as long as the name is not '.' or '..'
             if(strcmp(dir->d_name, ".") && strcmp(dir->d_name, "..")){
-                //printf("%s\n", dir->d_name); //print to the console
+
                 //get the hash from the file contents
                 char *file_name = dir->d_name;
                 char *file_content = readFile(file_name);
                 size_t file_size = strlen(file_content);
                 char *file_hash = str2md5(file_content, file_size);
 
+                //only happens on the first time through
                 if(prev == NULL){
                     prev = newNode(file_hash);
                     fn = prev;
@@ -40,20 +46,18 @@ int main(int argc, char **argv)
                     prev = insert(file_hash, prev);
                 }
 
-                num_files++;
-//                free(file_content);
-//                free(file_hash);
+                num_files++; //counter for the number of files
             }
         }
 
-        closedir(d);
+        closedir(d); //close DIR because we don't need it anymore
     }
 
-    printf("Number of files hashed: %d\n", num_files);
+    printf("Number of files hashed: %d\n", num_files); //print number of files hashed
 
-    computeParentHash(fn, NULL);
+    computeParentHash(fn, NULL); //call top hash computing algorithm
 
-    return 0;
+    return 0; //end the program
 }
 
 char* readFile(char *filename)
@@ -93,8 +97,6 @@ char* readFile(char *filename)
        fclose(handler);
     }
 
-
-
     return buffer;
 }
 
@@ -103,7 +105,6 @@ this helper function was found online, url to forum has since been lost
 */
 char *str2md5(const char *str, int length) {
 
-    //printf("Input: %s\n", str);
     int n;
     MD5_CTX c;
     unsigned char digest[16];
@@ -128,6 +129,5 @@ char *str2md5(const char *str, int length) {
         snprintf(&(out[n*2]), 32+1, "%02x", (unsigned int)digest[n]);
     }
 
-    //printf("Input Hashed: %s\n", out);
     return out;
 }
