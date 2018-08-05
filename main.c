@@ -10,14 +10,9 @@ char* readFile(char *filename);
 
 int main(int argc, char **argv)
 {
-    //prints the md5 hash of the string file
-    //this is a proof of concept for the hashing
-//    char file[64] = "Hello World\0";
-//    char *output = str2md5(file, strlen(file));
-//    printf("\nHello World MD5 Hash: %s\n", output);
-//    free(output);
 
-    //actual program
+    long unsigned int num_files = 0;
+
     DIR *d;
     struct dirent *dir;
     char file_dir[16] = "./files/";
@@ -31,7 +26,7 @@ int main(int argc, char **argv)
         while ((dir = readdir(d)) != NULL)
         {
             if(strcmp(dir->d_name, ".") && strcmp(dir->d_name, "..")){
-                printf("%s\n", dir->d_name); //print to the console
+                //printf("%s\n", dir->d_name); //print to the console
                 //get the hash from the file contents
                 char *file_name = dir->d_name;
                 char *file_content = readFile(file_name);
@@ -45,13 +40,16 @@ int main(int argc, char **argv)
                     prev = insert(file_hash, prev);
                 }
 
-                free(file_content);
-                free(file_hash);
+                num_files++;
+//                free(file_content);
+//                free(file_hash);
             }
         }
 
         closedir(d);
     }
+
+    printf("Number of files hashed: %d\n", num_files);
 
     computeParentHash(fn, NULL);
 
@@ -105,12 +103,10 @@ this helper function was found online, url to forum has since been lost
 */
 char *str2md5(const char *str, int length) {
 
-    printf("Input: %s\n", str);
+    //printf("Input: %s\n", str);
     int n;
     MD5_CTX c;
     unsigned char digest[16];
-//    char *out;
-//    free(out);
     char *out = (char*)malloc(32);
 
     MD5_Init(&c);
@@ -132,6 +128,6 @@ char *str2md5(const char *str, int length) {
         snprintf(&(out[n*2]), 32+1, "%02x", (unsigned int)digest[n]);
     }
 
-    printf("Input Hashed: %s\n", out);
+    //printf("Input Hashed: %s\n", out);
     return out;
 }
